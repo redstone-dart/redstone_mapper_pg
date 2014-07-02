@@ -73,13 +73,13 @@ PostgreSql get postgreSql => app.request.attributes.dbConn;
 
 @app.Route("/services/users/list")
 @Encode()
-List<User> listUsers() => 
+Future<List<User>> listUsers() => 
   //query users from the "user" table, and decode
   //the result to List<User>.
   postgreSql.query("select * from user", User);
 
 @app.Route("/services/users/add", methods: const[app.POST])
-addUser(@Decode() User user) => 
+Future addUser(@Decode() User user) => 
   //encode user, and insert it in the "user" table.
   postgreSql.execute("insert into users (name, password) "
                      "values (@username, @password)", user);
@@ -97,10 +97,10 @@ PostgreSqlService<User> userService = new PostgreSqlService<User>();
 
 @app.Route("/services/users/list")
 @Encode()
-List<User> listUsers() => userService.query("select * from user"); 
+Future<List<User>> listUsers() => userService.query("select * from user"); 
 
 @app.Route("/services/users/add", methods: const[app.POST])
-addUser(@Decode() User user) => 
+Future addUser(@Decode() User user) => 
   postgreSql.execute("insert into users (name, password) "
                      "values (@username, @password)", user);
 
