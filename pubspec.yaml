@@ -7,8 +7,7 @@ environment:
   sdk: '>=1.4.0 <2.0.0'
 dependencies:
   redstone: '>= 0.5.4 < 0.6.0'
-  redstone_mapper:
-    git: git://github.com/luizmineo/redstone_mapper.git
+  redstone_mapper: '>= 0.1.0 < 0.2.0'
   postgresql: '>=0.2.13 <0.3.0'
 dev_dependencies:
   unittest: '>=0.10.0 <0.12.0'
