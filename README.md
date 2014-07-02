@@ -76,7 +76,7 @@ PostgreSql get postgreSql => app.request.attributes.dbConn;
 List<User> listUsers() => 
   //query users from the "user" table, and decode
   //the result to List<User>.
-  postgreSql.query("select * from user");
+  postgreSql.query("select * from user", User);
 
 @app.Route("/services/users/add", methods: const[app.POST])
 addUser(@Decode() User user) => 
