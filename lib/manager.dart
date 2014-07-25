@@ -106,7 +106,11 @@ mapper.FieldDecoder _fieldDecoder = (Object data, String fieldName,
 mapper.FieldEncoder _fieldEncoder = (Map data, String fieldName, 
                                      mapper.Field fieldInfo, 
                                      List metadata, Object value) {
-  data[fieldName] = value;
+  String name = fieldInfo.model;
+  if (name == null) {
+    name = fieldName;
+  }
+  data[name] = value;
 };
 
 mapper.GenericTypeCodec _codec = new mapper.GenericTypeCodec(
