@@ -1,13 +1,12 @@
 library mapper_postgresql_tests;
 
 import 'dart:async';
-import 'dart:convert';
+import 'dart:convert' as conv;
 
 import 'package:unittest/unittest.dart';
 import 'package:mock/mock.dart';
 
-import 'package:redstone/server.dart' as app;
-import 'package:redstone/mocks.dart';
+import 'package:redstone/redstone.dart';
 
 import 'package:redstone_mapper/mapper_factory.dart';
 import 'package:redstone_mapper_pg/manager.dart';
@@ -109,13 +108,13 @@ main() {
       "password": "1234"
     };
     
-    setUp(() {
+    setUp(() async {
       var dbManager = new MockPostgreSqlManager(postgreSql);
-      app.addPlugin(getMapperPlugin(dbManager));
-      app.setUp([#redstone_postgresql_service]);
+      addPlugin(getMapperPlugin(dbManager));
+      await redstoneSetUp([#redstone_postgresql_service]);
     });
     
-    tearDown(app.tearDown);
+    tearDown(redstoneTearDown);
     
     test("find", () {
       mockConn.when(callsTo("query")).alwaysReturn(
@@ -123,8 +122,8 @@ main() {
               [userMap, userMap, userMap].map((u) => new MockRow(u))));
 
       var req = new MockRequest("/find");
-      return app.dispatch(req).then((resp) {
-        expect(resp.mockContent, equals(JSON.encode([userJson, userJson, userJson])));
+      return dispatch(req).then((resp) {
+        expect(resp.mockContent, equals(conv.JSON.encode([userJson, userJson, userJson])));
       });
     });
     
@@ -135,12 +134,12 @@ main() {
         return new Future.value(1);
       });
       
-      var req = new MockRequest("/save", method: app.POST, 
-          bodyType: app.JSON, body: userJson);
-      return app.dispatch(req).then((resp) {
+      var req = new MockRequest("/save", method: POST, 
+          bodyType: JSON, body: userJson);
+      return dispatch(req).then((resp) {
         mockConn.getLogs(callsTo("execute")).verify(happenedOnce);
         expect(encodedUser, equals(userMap));
-        expect(resp.mockContent, JSON.encode({"success": true}));
+        expect(resp.mockContent, conv.JSON.encode({"success": true}));
       });
     });
   });

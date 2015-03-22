@@ -2,7 +2,7 @@ library postgresql_service;
 
 import 'dart:async';
 
-import 'package:redstone/server.dart' as app;
+import 'package:redstone/redstone.dart';
 import 'package:redstone_mapper_pg/manager.dart';
 import 'package:postgresql/postgresql.dart' as pg;
 
@@ -54,7 +54,7 @@ class PostgreSqlService<T> {
   
   ///The PostgreSQL connection wrapper
   PostgreSql get postgreSql => 
-      _postgreSql != null ? _postgreSql : app.request.attributes["dbConn"];
+      _postgreSql != null ? _postgreSql : request.attributes["dbConn"];
   
   ///The PostgreSQL connection
   pg.Connection get innerConn => postgreSql.innerConn;

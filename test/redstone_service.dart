@@ -1,6 +1,6 @@
 library redstone_postgresql_service;
 
-import 'package:redstone/server.dart' as app;
+import 'package:redstone/redstone.dart';
 import 'package:redstone_mapper/mapper.dart';
 import 'package:redstone_mapper/plugin.dart';
 import 'package:redstone_mapper_pg/service.dart';
@@ -28,11 +28,11 @@ class User {
 
 PostgreSqlService _service = new PostgreSqlService<User>();
 
-@app.Route("/find")
+@Route("/find")
 @Encode()
 find() => _service.query("select * from user");
 
-@app.Route("/save", methods: const [app.POST])
+@Route("/save", methods: const [POST])
 save(@Decode() User user) =>
     _service.execute("insert into user set "
                      "username = @username "
