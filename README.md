@@ -1,11 +1,4 @@
-**Unfortunatelly, I won't be able to maintain this project (and any other open-source project) in the foreseeable future. I'm terrible sorry for this, and if you are relying on this code base for your project(s), please, accept my apologies.** 
-
-**Also, if you have the interest, feel free to fork this repository and improve it. (for Redstone, you'll probably want to take a look at the v0.6 branch, which has a nicer code base).**
-
-**For all you guys who have helped me improving this project, my sincere thanks.**
-
-redstone_mapper_pg
-==================
+# redstone_mapper_pg
 
 [![Build Status](https://drone.io/github.com/luizmineo/redstone_mapper_pg/status.png)](https://drone.io/github.com/luizmineo/redstone_mapper_pg/latest)
 
@@ -22,7 +15,7 @@ var uri = "postgres://testdb:password@localhost:5432/testdb";
 var dbManager = new PostgreSqlManager(uri, min: 1, max: 3);
 ```
 
-If you are using redstone_mapper as a Redstone.dart plugin, you can pass a `PostgreSqlManager` to `getMapperPlugin()`, 
+If you are using redstone_mapper as a Redstone.dart plugin, you can pass a `PostgreSqlManager` to `getMapperPlugin()`,
 so a database connection will be available for every request:
 
 ```dart
@@ -31,14 +24,14 @@ import 'package:redstone_mapper/plugin.dart';
 import 'package:redstone_mapper_pg/manager.dart';
 
 main() {
-  
+
   var uri = "postgres://testdb:password@localhost:5432/testdb";
   var dbManager = new PostgreSqlManager(uri, min: 1, max: 3);
-  
+
   app.addPlugin(getMapperPlugin(dbManager));
   app.setupConsoleLog();
   app.start();
-  
+
 }
 
 //redstone_mapper will create a "dbConn" attribute
@@ -46,7 +39,7 @@ main() {
 @app.Route("/services/users/list")
 listUsers(@app.Attr() PostgreSql dbConn) =>
    dbConn.innerConn.query("select * from users").toList();
-   
+
 //If you prefer, you can also create a getter to access the
 //database connection of the current request, so
 //you don't need to add an extra parameter for every route.
@@ -63,7 +56,7 @@ import 'package:redstone_mapper/plugin.dart';
 import 'package:redstone_mapper_pg/manager.dart';
 
 class User {
-  
+
   @Field()
   int id;
 
@@ -72,27 +65,27 @@ class User {
 
   @Field()
   String password;
-  
+
 }
 
 PostgreSql get postgreSql => app.request.attributes.dbConn;
 
 @app.Route("/services/users/list")
 @Encode()
-Future<List<User>> listUsers() => 
+Future<List<User>> listUsers() =>
   //query users from the "user" table, and decode
   //the result to List<User>.
   postgreSql.query("select * from user", User);
 
 @app.Route("/services/users/add", methods: const[app.POST])
-Future addUser(@Decode() User user) => 
+Future addUser(@Decode() User user) =>
   //encode user, and insert it in the "user" table.
   postgreSql.execute("insert into users (name, password) "
                      "values (@username, @password)", user);
 
 ```
 
-However, the `PostgreSql` class doesn't hide the `postgresql` API. You can access 
+However, the `PostgreSql` class doesn't hide the `postgresql` API. You can access
 the original connection object with the `PostgreSql.innerConn` property.
 
 Moreover, you can use a `PostgreSqlService` to handle operations that concerns the same entity type:
@@ -103,10 +96,10 @@ PostgreSqlService<User> userService = new PostgreSqlService<User>();
 
 @app.Route("/services/users/list")
 @Encode()
-Future<List<User>> listUsers() => userService.query("select * from user"); 
+Future<List<User>> listUsers() => userService.query("select * from user");
 
 @app.Route("/services/users/add", methods: const[app.POST])
-Future addUser(@Decode() User user) => 
+Future addUser(@Decode() User user) =>
   postgreSql.execute("insert into users (name, password) "
                      "values (@username, @password)", user);
 
