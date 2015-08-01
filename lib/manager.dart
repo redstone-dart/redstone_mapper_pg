@@ -21,7 +21,7 @@ class PostgreSqlManager implements DatabaseManager<PostgreSql> {
    * respectively. 
    */ 
   PostgreSqlManager(String uri, {int min: 1, int max: 3}) {
-    _pool = new Pool(uri, min: 1, max: 3);
+    _pool = new Pool(uri, minConnections: min, maxConnections: max);
     _init = _pool.start();
   }
   
