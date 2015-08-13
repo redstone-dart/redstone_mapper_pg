@@ -5,22 +5,22 @@ import 'dart:async';
 import 'package:redstone_mapper/database.dart';
 import 'package:redstone_mapper/mapper.dart' as mapper;
 import 'package:postgresql/postgresql.dart' as pg;
-import 'package:postgresql/postgresql_pool.dart';
+import 'package:postgresql/pool.dart';
 
 ///Manage connections with a PostgreSQL instance
 class PostgreSqlManager implements DatabaseManager<PostgreSql> {
   
   Pool _pool;
   Future _init;
-  
   /**
    * Creates a new PostgreSqlManager.
    * 
    * [uri] a PostgreSQL uri, and [min] and [max] are the minimun
    * and maximum number of connections that will be created, 
    * respectively. 
-   */ 
-  PostgreSqlManager(String uri, {int min: 1, int max: 3}) {
+   */
+
+  PostgreSqlManager(String uri, {int min: 5, int max: 15}) {
     _pool = new Pool(uri, minConnections: min, maxConnections: max);
     _init = _pool.start();
   }
@@ -31,9 +31,10 @@ class PostgreSqlManager implements DatabaseManager<PostgreSql> {
   }
 
   @override
-  Future<PostgreSql> getConnection() {
-    return _init.then((_) => _pool.connect())
-                .then((conn) => new PostgreSql(conn));
+  Future<PostgreSql> getConnection() async {
+    await _init;
+    var conn = await _pool.connect();
+    return new PostgreSql(conn);
   }
 }
 
